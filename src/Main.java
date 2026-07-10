@@ -148,7 +148,7 @@ static void sort012(int[] arr) {
         }
     }
 }
-static ArrayList<Integer> leaders(int arr[]) {
+static ArrayList<Integer> leaders(int[] arr) {
     ArrayList<Integer> ans=new ArrayList<>();
     int maxi=Integer.MIN_VALUE;
     int n = arr.length;
@@ -161,6 +161,158 @@ static ArrayList<Integer> leaders(int arr[]) {
     Collections.reverse(ans);
     return ans;
 }
+public int[] rearr(int[] nums) {
+    int n = nums.length;
+    int[] ans = new int[n];
+    int posIndex = 0, negIndex = 1;
+
+    for (int i = 0; i < n; i++) {
+        if (nums[i] > 0) {
+            ans[posIndex] = nums[i];
+            posIndex += 2;
+        } else {
+            ans[negIndex] = nums[i];
+            negIndex += 2;
+        }
+    }
+    return ans;
+}
+int majorityElement(int arr[]) {
+    int ele=0;
+    int cnt=0;
+    int n=arr.length;
+    for(int i=0;i<n;i++){
+        if(cnt==0){
+            ele=arr[i];
+        }
+        if(ele==arr[i]) cnt++;
+        else cnt--;
+    }
+    for (int i=0;i<n;i++){
+        if(arr[i]==ele) cnt++;
+    }
+    if(cnt>(n/2)) return ele;
+    return -1;
+}
+public int maxSubArray(int[] arr) {
+    int n=arr.length;
+    int res=arr[0];
+    int maxi=arr[0];
+    for (int i=1;i<n;i++){
+        maxi=Math.max(maxi+arr[i],arr[i]);
+        res=Math.max(maxi,res);
+    }
+    return res;
+}
+public int longestConsecutive(int[] arr) {
+    int n=arr.length;
+    if (n==0) return 0;
+    int longest=1;
+    HashSet<Integer> st=new HashSet<>();
+    for(int i=0;i<n;i++){
+        st.add(arr[i]);
+    }
+    for (int it:st){
+        if(!st.contains(it-1)){
+            int cnt=1;
+            int x=it;
+            while(st.contains(x+1)){
+                x++;
+                cnt++;
+            }
+            longest=Math.max(longest,cnt);
+        }
+    }
+    return longest;
+}
+public List<Integer> majorityElement2(int[] arr) {
+    HashMap<Integer,Integer> ans=new HashMap<>();
+    ArrayList<Integer> ls=new ArrayList<>();
+    int n=arr.length;
+    for (int i=0;i<n;i++){
+        ans.merge(arr[i],1,Integer::sum);
+    }
+    for (Map.Entry<Integer,Integer> it:ans.entrySet()){
+        if (it.getValue()>(n/3)){
+            ls.add(it.getKey());
+        }
+        if (ls.size()==2) break;
+    }
+    Collections.sort(ls);
+    return ls;
+}
+public List<List<Integer>> threeSum(int[] arr) {
+    int n=arr.length;
+    Arrays.sort(arr);
+    List<List<Integer>> ans=new ArrayList<>();
+    for (int i=0;i<n;i++){
+        if (i>0 && arr[i]==arr[i-1]) continue;
+        int j=i+1;
+        int k=n-1;
+        while(j<k){
+            int sum=arr[i]+arr[j]+arr[k];
+            if (sum<0){
+                j++;
+            }
+            else if (sum>0){
+                k--;
+            }
+            else{
+                List<Integer> temp=new ArrayList<>(Arrays.asList(arr[i],arr[j],arr[k]));
+                ans.add(temp);
+                j++;
+                k--;
+                while(j<k && arr[j]==arr[j-1]) j++;
+                while(j<k && arr[k]==arr[k+1]) k--;
+            }
+        }
+    }
+    return ans;
+}
+
+public void setZeroes(int[][] mat) {
+    int n=mat.length;
+    int m=mat[0].length;
+    int[] row=new int[n];
+    int[] col=new int[m];
+    for (int i=0;i<n;i++){
+        for (int j=0;j<m;j++){
+            if (mat[i][j]==0){
+                row[i]=1;
+                col[j]=1;
+            }
+        }
+    }
+    for (int i=0;i<n;i++){
+        for (int j=0;j<m;j++){
+            if (row[i]==1 || col[j]==1){
+                mat[i][j]=0;
+            }
+        }
+    }
+}
+
+public void rotate(int[][] matrix) {
+    int n=matrix.length;
+    for (int i=0;i<n;i++){
+        for (int j=i+1;j<n;j++){
+            int temp=matrix[i][j];
+            matrix[i][j]=matrix[j][i];
+            matrix[j][i]=temp;
+        }
+    }
+    for (int i=0;i<n;i++){
+        int left=0,right=n-1;
+        while(left<right){
+            int temp=matrix[i][left];
+            matrix[i][left]=matrix[i][right];
+            matrix[i][right]=temp;
+            left++;
+            right--;
+        }
+    }
+}
+
 
 void main() {
     int[] arr={12,0,34,0,563,0,23,34};
@@ -191,11 +343,21 @@ void main() {
     int[] nums2={1,1,1,0,1,0,0};
     System.out.println(maxConsecBits(nums2));
     System.out.println(longestSubarray(nums2,3));
-    int[] arr012={1,0,0,2,1,0,2,0,2,0,1,1,0};
+    int[] arr012={1,0,0,2,1,0,2,0,2,0,1,0};
     sort012(arr012);
     for (int i:arr012){
         System.out.print(i+" ");
     }
     System.out.println();
     System.out.println(leaders(arr));
+    int[] arr1={1,-2,4,3,4,5,-2,-1,-2};
+    int[] result=rearr(arr1);
+    for(int i:result) System.out.print(i+" ");
+    System.out.println();
+    System.out.println(majorityElement(arr1));
+    System.out.println(maxSubArray(arr1));
+    System.out.println(longestConsecutive(arr1));
+    System.out.println(majorityElement2(arr012));
+    System.out.println(threeSum(arr1));
 }
+
